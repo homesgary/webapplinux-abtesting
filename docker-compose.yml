@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  dockerwebapp:
+    image: dockerwebapp
+    build:
+      context: ./DockerWebApp
+      dockerfile: Dockerfile
