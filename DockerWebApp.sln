@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DockerWebApp", "DockerWebApp\DockerWebApp.csproj", "{AF107DFB-9C56-454F-A172-D821B16E8748}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C39762B7-82F5-4711-9C44-9AA844913E52}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "DockerWebApp\docker-compose.dcproj", "{C39762B7-82F5-4711-9C44-9AA844913E52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
