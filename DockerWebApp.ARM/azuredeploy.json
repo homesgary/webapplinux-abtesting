@@ -30,10 +30,11 @@
   },
   "variables": {
     "hostingPlanName": "[concat(parameters('siteName'), '-plan')]",
-    "ActualACRResourceGroup": "[if(equals(parameters('acrResourceGroup'), ''), resourceGroup().name, parameters('acrResourceGroup'))]",
+    "actualACRResourceGroup": "[if(equals(parameters('acrResourceGroup'), ''), resourceGroup().name, parameters('acrResourceGroup'))]",
     "slotName": "blue",
     "fullImageName": "[concat(parameters('acrName'), '.azurecr.io/', parameters('imageName'))]",
-    "insightsName": "[concat(parameters('siteName'), '-insights')]"
+    "insightsName": "[concat(parameters('siteName'), '-insights')]",
+    "acrUrl": "[concat('https://', parameters('acrName'), '.azurecr.io')]"
   },
   "resources": [
     {
@@ -52,11 +53,11 @@
             },
             {
               "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
-              "value": "[listCredentials(resourceId(variables('ActualACRResourceGroup'), 'Microsoft.ContainerRegistry/registries', parameters('acrName')), '2017-03-01').passwords[0].value]"
+              "value": "[listCredentials(resourceId(variables('actualACRResourceGroup'), 'Microsoft.ContainerRegistry/registries', parameters('acrName')), '2017-03-01').passwords[0].value]"
             },
             {
               "name": "DOCKER_REGISTRY_SERVER_URL",
-              "value": "[parameters('acrName')]"
+              "value": "[variables('acrUrl')]"
             },
             {
               "name": "APPLICATION_INSIGHTS_IKEY",
@@ -113,11 +114,11 @@
                 },
                 {
                   "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
-                  "value": "[listCredentials(resourceId(variables('ActualACRResourceGroup'), 'Microsoft.ContainerRegistry/registries', parameters('acrName')), '2017-03-01').passwords[0].value]"
+                  "value": "[listCredentials(resourceId(variables('actualACRResourceGroup'), 'Microsoft.ContainerRegistry/registries', parameters('acrName')), '2017-03-01').passwords[0].value]"
                 },
                 {
                   "name": "DOCKER_REGISTRY_SERVER_URL",
-                  "value": "[parameters('acrName')]"
+                  "value": "[variables('acrUrl')]"
                 },
                 {
                   "name": "APPLICATION_INSIGHTS_IKEY",
