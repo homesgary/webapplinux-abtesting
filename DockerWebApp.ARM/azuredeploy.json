@@ -31,7 +31,6 @@
   "variables": {
     "hostingPlanName": "[concat(parameters('siteName'), '-plan')]",
     "ActualACRResourceGroup": "[if(equals(parameters('acrResourceGroup'), ''), resourceGroup().name, parameters('acrResourceGroup'))]",
-    "acrKey": "[listCredentials(resourceId(variables('ActualACRResourceGroup'), 'Microsoft.ContainerRegistry/registries', parameters('acrName')), '2017-03-01').passwords[0].value]",
     "slotName": "blue",
     "fullImageName": "[concat(parameters('acrName'), '.azurecr.io/', parameters('imageName'))]",
     "insightsName": "[concat(parameters('siteName'), '-insights')]"
@@ -43,7 +42,7 @@
       "properties": {
         "siteConfig": {
           "DOCKER_CUSTOM_IMAGE_NAME": "[variables('fullImageName')]",
-          "DOCKER_REGISTRY_SERVER_PASSWORD": "[variables('acrKey')]",
+          "DOCKER_REGISTRY_SERVER_PASSWORD": "[listCredentials(resourceId(variables('ActualACRResourceGroup'), 'Microsoft.ContainerRegistry/registries', parameters('acrName')), '2017-03-01').passwords[0].value]",
           "DOCKER_REGISTRY_SERVER_URL": "[concat('https://', parameters('acrName'), '.azurecr.io/')]",
           "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('acrName')]",
           "APPLICATION_INSIGHTS_IKEY": "[reference(concat('Microsoft.Insights/components/', variables('insightsName')), '2015-05-01').InstrumentationKey]"
@@ -87,7 +86,7 @@
             "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
             "siteConfig": {
               "DOCKER_CUSTOM_IMAGE_NAME": "[concat(variables('fullImageName'), ':latest')]",
-              "DOCKER_REGISTRY_SERVER_PASSWORD": "[variables('acrKey')]",
+              "DOCKER_REGISTRY_SERVER_PASSWORD": "[listCredentials(resourceId(variables('ActualACRResourceGroup'), 'Microsoft.ContainerRegistry/registries', parameters('acrName')), '2017-03-01').passwords[0].value]",
               "DOCKER_REGISTRY_SERVER_URL": "[concat('https://', parameters('acrName'), '.azurecr.io/')]",
               "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('acrName')]"
             }
