@@ -1,0 +1,137 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "siteName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of azure web app"
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of container image to deploy"
+      }
+    },
+    "acrName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of ACR e.g. myazurecr (without .azurecr.io)"
+      }
+    },
+    "acrResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of ACR Resource Group"
+      },
+      "defaultValue": ""
+    }
+  },
+  "variables": {
+    "hostingPlanName": "[concat(parameters('siteName'), '-plan')]",
+    "ActualACRResourceGroup": "[if(equals(parameters('acrResourceGroup'), ''), resourceGroup().name, parameters('acrResourceGroup'))]",
+    "acrKey": "[listCredentials(resourceId(variables('ActualACRResourceGroup'), 'Microsoft.ContainerRegistry/registries', parameters('acrName')), '2017-03-01').passwords[0].value]",
+    "slotName": "blue",
+    "fullImageName": "[concat(parameters('acrName'), '.azurecr.io/', parameters('imageName'))]",
+    "insightsName": "[concat(parameters('siteName'), '-insights')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites",
+      "name": "[parameters('siteName')]",
+      "properties": {
+        "siteConfig": {
+          "DOCKER_CUSTOM_IMAGE_NAME": "[variables('fullImageName')]",
+          "DOCKER_REGISTRY_SERVER_PASSWORD": "[variables('acrKey')]",
+          "DOCKER_REGISTRY_SERVER_URL": "[concat('https://', parameters('acrName'), '.azurecr.io/')]",
+          "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('acrName')]",
+          "APPLICATION_INSIGHTS_IKEY": "[reference(concat('Microsoft.Insights/components/', variables('insightsName')), '2015-05-01').InstrumentationKey]"
+        },
+        "name": "[parameters('siteName')]",
+        "serverFarmId": "[variables('hostingPlanName')]",
+        "hostingEnvironment": ""
+      },
+      "tags": {
+        "displayName": "Site"
+      },
+      "apiVersion": "2016-08-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[variables('hostingPlanName')]"
+      ],
+      "resources": [
+        {
+          "apiVersion": "2016-08-01",
+          "name": "slotconfignames",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites/', parameters('siteName'))]"
+          ],
+          "properties": {
+            "appSettingNames": [
+              "DOCKER_CUSTOM_IMAGE_NAME"
+            ]
+          }
+        },
+        {
+          "apiVersion": "2016-08-01",
+          "name": "[variables('slotName')]",
+          "type": "slots",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites/', parameters('siteName'))]"
+          ],
+          "properties": {
+            "name": "[concat(parameters('siteName'), '(', variables('slotName'), ')')]",
+            "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+            "siteConfig": {
+              "DOCKER_CUSTOM_IMAGE_NAME": "[concat(variables('fullImageName'), ':latest')]",
+              "DOCKER_REGISTRY_SERVER_PASSWORD": "[variables('acrKey')]",
+              "DOCKER_REGISTRY_SERVER_URL": "[concat('https://', parameters('acrName'), '.azurecr.io/')]",
+              "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('acrName')]"
+            }
+          },
+          "tags": {
+            "displayName": "Slot",
+            "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', variables('hostingPlanName'))]": "Resource"
+          }
+        }
+      ]
+    },
+    {
+      "apiVersion": "2016-09-01",
+      "name": "[variables('hostingPlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "name": "[variables('hostingPlanName')]",
+        "workerSizeId": "1",
+        "reserved": true,
+        "numberOfWorkers": "1",
+        "hostingEnvironment": ""
+      },
+      "sku": {
+        "Tier": "Standard",
+        "Name": "S1"
+      },
+      "kind": "linux",
+      "tags": {
+        "displayName": "HostingPlan"
+      }
+    },
+    {
+      "apiVersion": "2014-08-01",
+      "name": "[variables('insightsName')]",
+      "type": "Microsoft.Insights/components",
+      "location": "eastus",
+      "properties": {
+        "ApplicationId": "[variables('insightsName')]",
+        "Application_Type": "other"
+      },
+      "tags": {
+        "displayName": "ApplicationInsights"
+      }
+    }
+  ]
+}
