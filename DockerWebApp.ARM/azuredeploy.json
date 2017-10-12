@@ -41,11 +41,28 @@
       "name": "[parameters('siteName')]",
       "properties": {
         "siteConfig": {
-          "DOCKER_CUSTOM_IMAGE_NAME": "[variables('fullImageName')]",
-          "DOCKER_REGISTRY_SERVER_PASSWORD": "[listCredentials(resourceId(variables('ActualACRResourceGroup'), 'Microsoft.ContainerRegistry/registries', parameters('acrName')), '2017-03-01').passwords[0].value]",
-          "DOCKER_REGISTRY_SERVER_URL": "[concat('https://', parameters('acrName'), '.azurecr.io/')]",
-          "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('acrName')]",
-          "APPLICATION_INSIGHTS_IKEY": "[reference(concat('Microsoft.Insights/components/', variables('insightsName')), '2015-05-01').InstrumentationKey]"
+          "appSettings": [
+            {
+              "name": "DOCKER_CUSTOM_IMAGE_NAME",
+              "value": "[variables('fullImageName')]"
+            },
+            {
+              "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+              "value": "[parameters('acrName')]"
+            },
+            {
+              "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+              "value": "[listCredentials(resourceId(variables('ActualACRResourceGroup'), 'Microsoft.ContainerRegistry/registries', parameters('acrName')), '2017-03-01').passwords[0].value]"
+            },
+            {
+              "name": "DOCKER_REGISTRY_SERVER_URL",
+              "value": "[parameters('acrName')]"
+            },
+            {
+              "name": "APPLICATION_INSIGHTS_IKEY",
+              "value": "[reference(concat('Microsoft.Insights/components/', variables('insightsName')), '2015-05-01').InstrumentationKey]"
+            }
+          ]
         },
         "name": "[parameters('siteName')]",
         "serverFarmId": "[variables('hostingPlanName')]",
@@ -85,10 +102,28 @@
             "name": "[concat(parameters('siteName'), '(', variables('slotName'), ')')]",
             "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
             "siteConfig": {
-              "DOCKER_CUSTOM_IMAGE_NAME": "[concat(variables('fullImageName'), ':latest')]",
-              "DOCKER_REGISTRY_SERVER_PASSWORD": "[listCredentials(resourceId(variables('ActualACRResourceGroup'), 'Microsoft.ContainerRegistry/registries', parameters('acrName')), '2017-03-01').passwords[0].value]",
-              "DOCKER_REGISTRY_SERVER_URL": "[concat('https://', parameters('acrName'), '.azurecr.io/')]",
-              "DOCKER_REGISTRY_SERVER_USERNAME": "[parameters('acrName')]"
+              "appSettings": [
+                {
+                  "name": "DOCKER_CUSTOM_IMAGE_NAME",
+                  "value": "[concat(variables('fullImageName'), ':latest')]"
+                },
+                {
+                  "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+                  "value": "[parameters('acrName')]"
+                },
+                {
+                  "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+                  "value": "[listCredentials(resourceId(variables('ActualACRResourceGroup'), 'Microsoft.ContainerRegistry/registries', parameters('acrName')), '2017-03-01').passwords[0].value]"
+                },
+                {
+                  "name": "DOCKER_REGISTRY_SERVER_URL",
+                  "value": "[parameters('acrName')]"
+                },
+                {
+                  "name": "APPLICATION_INSIGHTS_IKEY",
+                  "value": "[reference(concat('Microsoft.Insights/components/', variables('insightsName')), '2015-05-01').InstrumentationKey]"
+                }
+              ]
             }
           },
           "tags": {
