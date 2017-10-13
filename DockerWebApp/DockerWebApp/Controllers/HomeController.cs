@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DockerWebApp.Models;
+using System.Reflection;
 
 namespace DockerWebApp.Controllers
 {
@@ -17,7 +18,8 @@ namespace DockerWebApp.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = $"Your application description page. AIKey = {Environment.GetEnvironmentVariable("AIKey") ?? "none"}";
+			var version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+			ViewData["Message"] = $"Your application description page. Version = {version}";
 
             return View();
         }
