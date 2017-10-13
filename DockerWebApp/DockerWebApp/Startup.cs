@@ -34,8 +34,8 @@ namespace DockerWebApp
 			if (aiKey != null)
 			{
 				TelemetryConfiguration.Active.InstrumentationKey = aiKey;
-				var version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
-				app.ApplicationServices.GetService<TelemetryClient>().Context.Properties["Version"] = version;
+				//var version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+				//app.ApplicationServices.GetService<TelemetryClient>().Context.Properties["Version"] = version;
 			}
 			if (env.IsDevelopment())
             {
