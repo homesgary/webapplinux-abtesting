@@ -101,10 +101,6 @@
             "siteConfig": {
               "appSettings": [
                 {
-                  "name": "DOCKER_CUSTOM_IMAGE_NAME",
-                  "value": "[concat(variables('fullImageName'), ':latest')]"
-                },
-                {
                   "name": "DOCKER_REGISTRY_SERVER_USERNAME",
                   "value": "[parameters('acrName')]"
                 },
