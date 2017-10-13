@@ -33,6 +33,7 @@ namespace DockerWebApp
 			if (aiKey != null)
 			{
 				TelemetryConfiguration.Active.InstrumentationKey = aiKey;
+				app.ApplicationServices.GetService<TelemetryClient>().Context.Properties["Slot"] = Environment.GetEnvironmentVariable("Slot") ?? "unknown";
 			}
             if (env.IsDevelopment())
             {
