@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
+using System.Reflection;
 
 namespace DockerWebApp
 {
@@ -33,9 +34,10 @@ namespace DockerWebApp
 			if (aiKey != null)
 			{
 				TelemetryConfiguration.Active.InstrumentationKey = aiKey;
-				app.ApplicationServices.GetService<TelemetryClient>().Context.Properties["Slot"] = Environment.GetEnvironmentVariable("Slot") ?? "unknown";
+				var version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+				app.ApplicationServices.GetService<TelemetryClient>().Context.Properties["Version"] = version;
 			}
-            if (env.IsDevelopment())
+			if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
