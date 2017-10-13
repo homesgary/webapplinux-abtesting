@@ -17,7 +17,7 @@ namespace DockerWebApp.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
+            ViewData["Message"] = $"Your application description page. AIKey = {Environment.GetEnvironmentVariable("AIKey") ?? "none"}";
 
             return View();
         }

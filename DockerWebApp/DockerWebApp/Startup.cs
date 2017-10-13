@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace DockerWebApp
 {
@@ -22,11 +24,16 @@ namespace DockerWebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-        }
+		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+			var aiKey = Environment.GetEnvironmentVariable("AIKey");
+			if (aiKey != null)
+			{
+				TelemetryConfiguration.Active.InstrumentationKey = aiKey;
+			}
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

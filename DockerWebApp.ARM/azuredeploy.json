@@ -60,7 +60,7 @@
               "value": "[variables('acrUrl')]"
             },
             {
-              "name": "ApplicationInsights:InstrumentationKey",
+              "name": "AIKey",
               "value": "[reference(concat('Microsoft.Insights/components/', variables('insightsName')), '2015-05-01').InstrumentationKey]"
             }
           ]
@@ -121,7 +121,7 @@
                   "value": "[variables('acrUrl')]"
                 },
                 {
-                  "name": "ApplicationInsights:InstrumentationKey",
+                  "name": "AIKey",
                   "value": "[reference(concat('Microsoft.Insights/components/', variables('insightsName')), '2015-05-01').InstrumentationKey]"
                 }
               ]
