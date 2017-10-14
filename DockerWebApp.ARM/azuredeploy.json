@@ -44,10 +44,6 @@
         "siteConfig": {
           "appSettings": [
             {
-              "name": "Slot",
-              "value": "production"
-            },
-            {
               "name": "DOCKER_REGISTRY_SERVER_USERNAME",
               "value": "[parameters('acrName')]"
             },
@@ -87,7 +83,6 @@
           ],
           "properties": {
             "appSettingNames": [
-              "Slot",
               "DOCKER_CUSTOM_IMAGE_NAME"
             ]
           }
@@ -105,10 +100,6 @@
             "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
             "siteConfig": {
               "appSettings": [
-                {
-                  "name": "Slot",
-                  "value": "[variables('slotName')]"
-                },
                 {
                   "name": "DOCKER_REGISTRY_SERVER_USERNAME",
                   "value": "[parameters('acrName')]"
